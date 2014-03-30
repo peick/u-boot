@@ -17,35 +17,35 @@
 #include <menu.h>
 #include <hush.h>
 
-#define BOOTSCAN_MAX_DEVICES        10
-#define BOOTSCAN_MAX_PARTITIONS     10
-#define BOOTSCAN_MAX_BOOTABLES      10
+#define BOOTSCAN_MAX_DEVICES		10
+#define BOOTSCAN_MAX_PARTITIONS		10
+#define BOOTSCAN_MAX_BOOTABLES		10
 
-#define BOOTSCAN_EXIT 1
-#define BOOTSCAN_SHOW 2
+#define BOOTSCAN_EXIT			1
+#define BOOTSCAN_SHOW			2
 
-#define BOOTSCAN_DFLT_BOOTARGS	CONFIG_BOOTARGS \
+#define BOOTSCAN_DFLT_BOOTARGS		CONFIG_BOOTARGS \
 	" console=tty1 console=ttySAC1,115200 hdtv_type=hdmi" \
 	" hdtv_format=720p60hz"
-#define BOOTSCAN_DFLT_BOOTCMD	CONFIG_BOOTCOMMAND
+#define BOOTSCAN_DFLT_BOOTCMD		CONFIG_BOOTCOMMAND
 #define BOOTSCAN_ANDROID_BOOTCMD	CONFIG_BOOTCOMMAND
-#define BOOTSCAN_ANDROID_LABEL	"Android"
-#define BOOTSCAN_ANDROID_SYSTEM	"Android-Sys"
+#define BOOTSCAN_ANDROID_LABEL		"Android"
+#define BOOTSCAN_ANDROID_SYSTEM		"Android-Sys"
 #define BOOTSCAN_ANDROID_SYS_IMAGES	"system_aa", ""
 #define BOOTSCAN_ANDROID_BOOTSCR	"boot.scr"
-#define BOOTSCAN_BOOTBASEDIRS	"/boot/", "/", ""
-#define BOOTSCAN_BOOTIMAGES	"zImage", "uImage", ""
-#define BOOTSCAN_BOOTINITRDS	"uInitrd", ""
-#define BOOTSCAN_BOOTINIS	"boot.ini", "boot.scr", ""
-#define BOOTSCAN_ROOTFS		"/bin/uname", "/etc/passwd", "/etc/issue", ""
+#define BOOTSCAN_BOOTBASEDIRS		"/boot/", "/", ""
+#define BOOTSCAN_BOOTIMAGES		"zImage", "uImage", ""
+#define BOOTSCAN_BOOTINITRDS		"uInitrd", ""
+#define BOOTSCAN_BOOTINIS		"boot.ini", "boot.scr", ""
+#define BOOTSCAN_ROOTFS			"/bin/uname", "/etc/passwd", "/etc/issue", ""
 
 #define BOOTSCAN_PROMPT_BOOTCMD \
 	"setenv bootcmd echo Dropping you to u-boot"
 
 #define BOOTSCAN_OPTIONS_HEADER \
-	"#  Boot Dev   Image        Label       " \
-	"| Root Dev   Label        UUID         " \
-	"\n" \
+	"#  Boot Dev   Image        Label       "	\
+	"| Root Dev   Label        UUID         "	\
+	"\n"						\
 	BOOTSCAN_OPTIONS_DIVIDER
 
 #define BOOTSCAN_OPTIONS_DIVIDER \
@@ -62,35 +62,35 @@
 #define BOOTSCAN_ROOT		"bootscan_root"
 
 #define BOOTSCAN_BANNER1 \
-"\n" \
-"                       ___    _           _     _\n" \
-"                      /___\\__| |_ __ ___ (_) __| |\n" \
-"                     //  // _` | '__/ _ \\| |/ _` |\n" \
-"                    / \\_// (_| | | | (_) | | (_| |\n" \
-"                    \\___/ \\__,_|_|  \\___/|_|\\__,_|\n" \
-"\n"
+	"\n"								\
+	"                       ___    _           _     _\n"		\
+	"                      /___\\__| |_ __ ___ (_) __| |\n"		\
+	"                     //  // _` | '__/ _ \\| |/ _` |\n"		\
+	"                    / \\_// (_| | | | (_) | | (_| |\n"		\
+	"                    \\___/ \\__,_|_|  \\___/|_|\\__,_|\n"	\
+	"\n"
+
 #define BOOTSCAN_BANNER2 \
-"                       _  _   _  _   _ ____\n" \
-"                      | || | | || | / |___ \\\n" \
-"                      | || |_| || |_| | __) |\n" \
-"                      |__   _|__   _| |/ __/\n" \
-"                         |_|    |_| |_|_____|\n"
+	"                       _  _   _  _   _ ____\n"			\
+	"                      | || | | || | / |___ \\\n"		\
+	"                      | || |_| || |_| | __) |\n"		\
+	"                      |__   _|__   _| |/ __/\n"		\
+	"                         |_|    |_| |_|_____|\n"
 
 typedef enum { UNKNOWN, LINUX_ROOTFS, ANDROID_INSTALLER } rootfs_t;
 /*
- * 
  * bootimage is null string if no boot image found, or
- * 	is ANDROID_BOOT_LABEL if this is an Android boot device, or
- * 	is the full path to the linux kernel image.
+ *   is ANDROID_BOOT_LABEL if this is an Android boot device, or
+ *   is the full path to the linux kernel image.
  * chardev is the string which represent the device in Linux identifiable
- * 	form. Example: mmcblk0p1 for mmc interface, 0 device, 1 partition.
- * 	Another example would be sda1 for a usb or ide interface, first
- * 	device and the first partition.
+ *   form. Example: mmcblk0p1 for mmc interface, 0 device, 1 partition.
+ *   Another example would be sda1 for a usb or ide interface, first
+ *   device and the first partition.
  * rootfs specifies if this bootable is also contains the root filesystem
- * 	wrt linux. LINUX_ROOTFS implies it hosts a linux root file system.
- * 	ANDROID_INSTALLER implies it hosts an Android installer image.
- * 	In this case we also mark bootimage as BOOTSCAB_ANDROI_SYSTEM.
- */ 
+ *   wrt linux. LINUX_ROOTFS implies it hosts a linux root file system.
+ *   ANDROID_INSTALLER implies it hosts an Android installer image.
+ *   In this case we also mark bootimage as BOOTSCAB_ANDROI_SYSTEM.
+ */
 struct bootscan_bootables {
 	char interface[5];
 	int device;
@@ -140,7 +140,6 @@ static void debug_print_bootlist(struct bootscan_bootables b[])
 			b[i].chardev,
 			b[i].rootfs);
 	}
-
 }
 #endif
 
@@ -161,15 +160,15 @@ static void bootscan_menuprint(void *print_buffer)
  * We make sure that boot is not executed, by commenting it out
  */
 static void process_bootini(char *buffer, ulong len) {
-char *line = buffer;
-char *beg = buffer;
-char savechar;
+	char *line = buffer;
+	char *beg = buffer;
+	char savechar;
 
 	/* Scan thru the buffer and spot the boot command */
 	debug("%s buffer: %p len: %x\n", __func__, buffer, (int) len);
 	while (beg < &buffer[len]) {
 		/* Get a line, note that we need to replace the \0 to \n
-   		 *  back when we are done */
+		 *  back when we are done */
 		line = strsep(&beg, "\n");
 		if (line == NULL) break;
 		debug("line: %s\n", line);
@@ -219,8 +218,8 @@ char savechar;
  * If successful it also updates the len variable to the length of text.
  */
 static char *process_bootscr(void *ptr, ulong *len) {
-        image_header_t  *hdr;
-	ulong           *data;
+	image_header_t	*hdr;
+	ulong		*data;
 	char		*buf;
 
 	switch(genimg_get_format(ptr)) {
@@ -240,7 +239,7 @@ static char *process_bootscr(void *ptr, ulong *len) {
 		if (!image_check_type (hdr, IH_TYPE_SCRIPT)) {
 			puts ("Bad image type\n");
 			return NULL;
-                }
+		}
 
 		/* get length of script */
 		data = (ulong *)image_get_data (hdr);
@@ -248,19 +247,19 @@ static char *process_bootscr(void *ptr, ulong *len) {
 		if ((*len = uimage_to_cpu (*data)) == 0) {
 			puts ("Empty Script\n");
 			return NULL;
-                }
+		}
 
 		/*
 		 * scripts are just multi-image files with one component,
 		 * seek past the zero-terminated sequence of image lengths
 		 * to get to the actual image data
 		 */
-                while (*data++);
+		while (*data++);
 
 		/* NULL terminate the text just to be sure */
 		buf = (char *) data;
 		buf[*len] = '\0';
-                break;
+		break;
 
 	default:
 		puts("Wrong image format.\n");
@@ -321,7 +320,7 @@ static int evaluate_env(void)
 	sprintf(command, "bootm %x", CONFIG_BOOTSCAN_SYS_LOAD_ADDR);
 
 	/*
-	 * Check if we have to boot with the initrd. Easy check is to 
+	 * Check if we have to boot with the initrd. Easy check is to
 	 * see if there is a ';' in UBOOT_BOOTCMD
 	 */
 	if (strchr(s, ';')) {
@@ -387,7 +386,7 @@ static void run_android(struct bootscan_bootables b)
 
 	run_command(BOOTSCAN_ANDROID_BOOTCMD, 0);
 
-	/* If we return here something wrong has happened and we 
+	/* If we return here something wrong has happened and we
 	 * couldn't boot into Android
 	 */
 	return;
@@ -412,13 +411,13 @@ static int handle_choice(struct bootscan_bootables bootlist[], char *choice)
 	if ( (choice == NULL) || choice[0] == '*') {
 		debug("bootscan: %s choice is null or default.\n", __func__);
 		/* This is where we process it like '*' was chosen. Note
- 		 * that we do have to validate the last choice for two
- 		 * reasons:
- 		 * 1. user would have changed boot.XXX and is rebooting
- 		 * 2. user has removed some devices and hence the choice
- 		 *    numbering is not valid anymore.
- 		 */
-	
+		 * that we do have to validate the last choice for two
+		 * reasons:
+		 * 1. user would have changed boot.XXX and is rebooting
+		 * 2. user has removed some devices and hence the choice
+		 *    numbering is not valid anymore.
+		 */
+
 		if (last_choice != NULL)
 			choice = last_choice;
 		else {
@@ -443,7 +442,7 @@ static int handle_choice(struct bootscan_bootables bootlist[], char *choice)
 		/* User wants u-boot prompt */
 		debug("bootscan: %s choice is +\n", __func__);
 		s = getenv(BOOTSCAN_BOOTCMD);
-		if ( (s == NULL) || 
+		if ( (s == NULL) ||
 		     (strcmp(s, BOOTSCAN_PROMPT_BOOTCMD) !=  0) ) {
 			setenv(BOOTSCAN_BOOTCMD, BOOTSCAN_PROMPT_BOOTCMD);
 			if (call_saveenv)
@@ -464,15 +463,15 @@ static int handle_choice(struct bootscan_bootables bootlist[], char *choice)
 	booti = choice_pairs[index][0];
 	rooti = choice_pairs[index][1];
 
-	/* Check if this index is valid. As we set it when no choice is 
+	/* Check if this index is valid. As we set it when no choice is
 	 * chosen by user and we are using his last choice options.
 	 */
-	if ( (bootlist[booti].fstype == '0') || 
+	if ( (bootlist[booti].fstype == '0') ||
 	     (bootlist[booti].fstype == '\0') ) {
 		index = 0;
 		booti = choice_pairs[index][0];
 		rooti = choice_pairs[index][1];
-		
+
 		/* If that is also not valid ? */
 		if ((bootlist[booti].fstype == '0') ||
 	             (bootlist[booti].fstype == '\0') ) {
@@ -486,7 +485,7 @@ static int handle_choice(struct bootscan_bootables bootlist[], char *choice)
 	debug("handle_choice: booti: %d rooti: %d\n", booti, rooti);
 
 	/* Check if its Android.
- 	 */
+	 */
 	if (is_android_partition(bootlist[booti]))
 	{
 		run_android(bootlist[booti]);
@@ -540,7 +539,7 @@ static int handle_choice(struct bootscan_bootables bootlist[], char *choice)
 		debug("Issuing command: %s\n", command);
 		if (run_command(command, 0) != 0) {
 			/* Could not load boot.scr */
-			printf("Error reading %s ... ignoring\n", 
+			printf("Error reading %s ... ignoring\n",
 				bootlist[booti].bootini);
 		}
 		else {
@@ -620,7 +619,7 @@ static int handle_choice(struct bootscan_bootables bootlist[], char *choice)
 		bootlist[booti].bootimage);
 	if (bootlist[booti].bootinitrd[0] != '\0') {
 		sprintf(command, "setenv bootcmd '%s %s %d:%d %x %s"
-			"; %s %s %d:%d %x %s'", 
+			"; %s %s %d:%d %x %s'",
 			load_command,
 			bootlist[booti].interface,
 			bootlist[booti].device,
@@ -842,7 +841,7 @@ static int check_for_file(struct bootscan_bootables bootlist[],
 			debug("%s: f %s exists\n", __func__, fname);
 			return 1;
 		}
-		else 
+		else
 			debug("%s: f %s does not exist!\n", __func__, fname);
 	}
 
@@ -875,8 +874,8 @@ static int check_for_file(struct bootscan_bootables bootlist[],
  * 1. Is a FAT partition
  * 2. Has a Android system image like system_aa
  * If 2. is true then its Android system installer. Special case.
- * 	Here we also mark it as an installer image with rootfs
- * 	set to ANDROIDSYSTEM.
+ *   Here we also mark it as an installer image with rootfs
+ *   set to ANDROIDSYSTEM.
  * If 2 is not true but there exists a linux boot image (zImage) then
  * its not an Android partition.
  * If fall through here => Android partition.
@@ -903,7 +902,7 @@ static int populate_android(struct bootscan_bootables bootlist[],
 			/* This should have a boot.ini or a boot.scr */
 			bindex = 0;
 			while (inis[bindex][0] != '\0') {
-				if (check_for_file(bootlist, bootindex, 
+				if (check_for_file(bootlist, bootindex,
 					inis[bindex]) == 1) {
 					/* We got the ini */
 					isandroid = 1;
@@ -989,7 +988,7 @@ static int populate_linux(struct bootscan_bootables bootlist[],
 			       basedirs[bdindex]);
 			strcat(bootlist[*bootindex].bootimage,
 			       images[findex]);
-			if (check_for_file(bootlist, bootindex, 
+			if (check_for_file(bootlist, bootindex,
 			    bootlist[*bootindex].bootimage) == 0) {
 				findex++;
 				bootlist[*bootindex].bootimage[0] = '\0';
@@ -1011,9 +1010,9 @@ static int populate_linux(struct bootscan_bootables bootlist[],
 		}
 
 		/*
- 		 * We are here implies we have a linux image.
-  		 * Lets check if there is an initrd
-  		 */
+		 * We are here implies we have a linux image.
+		 * Lets check if there is an initrd
+		 */
 		findex = 0;
 		while (initrds[findex][0] != '\0') {
 			/* Generate the full path for the file */
@@ -1021,7 +1020,7 @@ static int populate_linux(struct bootscan_bootables bootlist[],
 			       basedirs[bdindex]);
 			strcat(bootlist[*bootindex].bootinitrd,
 			       initrds[findex]);
-			if (check_for_file(bootlist, bootindex, 
+			if (check_for_file(bootlist, bootindex,
 			    bootlist[*bootindex].bootinitrd) == 0) {
 				findex++;
 				bootlist[*bootindex].bootinitrd[0] = '\0';
@@ -1039,7 +1038,7 @@ static int populate_linux(struct bootscan_bootables bootlist[],
 			       basedirs[bdindex]);
 			strcat(bootlist[*bootindex].bootini,
 			       inis[findex]);
-			if (check_for_file(bootlist, bootindex, 
+			if (check_for_file(bootlist, bootindex,
 			    bootlist[*bootindex].bootini) == 0) {
 				findex++;
 				bootlist[*bootindex].bootini[0] = '\0';
@@ -1075,9 +1074,9 @@ static int populate_linux(struct bootscan_bootables bootlist[],
 }
 
 /*
- * Reworked this so that it doesn’t break the older images. Before we had 
+ * Reworked this so that it doesn’t break the older images. Before we had
  * an assumption that the partition holding the boot image in an ext partition
- * is the same as the one holding the root fs in the case of Linux. 
+ * is the same as the one holding the root fs in the case of Linux.
  * This broke the older Linux images (Android would work), as the fat partition
  * contained the boot.ini/scr and the linux image.
  *
@@ -1090,7 +1089,7 @@ static int populate_linux(struct bootscan_bootables bootlist[],
  * 4. Name of ini/scr files: boot.ini, boot.scr
  * The above takes care of the location of the linux kernel and its supporting
  * files - could be any partition type - fat/ext
- * 
+ *
  */
 static void populate_bootfiles(struct bootscan_bootables bootlist[],
 			       int *bootindex)
@@ -1127,7 +1126,7 @@ static void populate_partitions(struct bootscan_bootables *bootlist,
 		/* Update uuid and label from partition structure*/
 		strcpy(bootlist[*bootindex].label, (char *) disk_part.name);
 		strcpy(bootlist[*bootindex].uuid, disk_part.uuid);
-		debug("disk_part.name: %s disk_part.uuid: %s\n", 
+		debug("disk_part.name: %s disk_part.uuid: %s\n",
 		      disk_part.name, disk_part.uuid);
 		populate_bootfiles(bootlist, bootindex);
 		ext4fs_close();
@@ -1334,7 +1333,7 @@ static void populate_bootlist(struct bootscan_bootables bootlist[])
         for (i = 1; i < bootindex; i++) {
                 if (bootlist[i].fstype == '0')
                         break;
-		/* Lets update chardev 
+		/* Lets update chardev
 		 * Logic is as follows -
 		 * mmc -> mmc and device # change => mmcdrive++
 		 * mmc -> XXX => usbdrive = 'a'
@@ -1403,4 +1402,3 @@ U_BOOT_CMD(
 );
 
 #endif /* CONFIG_MENU */
-

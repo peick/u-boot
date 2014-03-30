@@ -47,16 +47,16 @@
 
 /* Hardkernel defined */
 #define CONFIG_EXYNOS_PRIME	1
-#define	CONFIG_HKDK4212		1
-#define	CONFIG_HKDK4412		1
+#define CONFIG_HKDK4212		1
+#define CONFIG_HKDK4412		1
 
 #define CONFIG_TRUSTZONE
 #define CONFIG_TRUSTZONE_RESERVED_DRAM	0x100000
 #ifdef CONFIG_TRUSTZONE
 #define CONFIG_BL1_MONITOR
-#define CONFIG_BOOTLOADER_MONITOR        1
-#define CONFIG_PHY_IRAM_BASE            (0x02020000)
-#define CONFIG_PHY_IRAM_NS_BASE         (CONFIG_PHY_IRAM_BASE + 0x2F000)
+#define CONFIG_BOOTLOADER_MONITOR	1
+#define CONFIG_PHY_IRAM_BASE		(0x02020000)
+#define CONFIG_PHY_IRAM_NS_BASE		(CONFIG_PHY_IRAM_BASE + 0x2F000)
 #endif
 
 #define CONFIG_SECURE_BL1_ONLY
@@ -136,7 +136,7 @@
 #define BOARD_LATE_INIT
 
 /* input clock of PLL: SMDKV310 has 24MHz input clock */
-#define CONFIG_SYS_CLK_FREQ	24000000
+#define CONFIG_SYS_CLK_FREQ		24000000
 
 /* DRAM Base */
 #define CONFIG_SYS_SDRAM_BASE		0x40000000
@@ -172,14 +172,14 @@
 #define CONFIG_S3C_USBD
 #undef CONFIG_USB_CPUMODE
 
-#define USBD_DOWN_ADDR		0xc0000000
+#define USBD_DOWN_ADDR			0xc0000000
 
 /* USB */
-#define CONFIG_SYS_CACHELINE_SIZE 32
+#define CONFIG_SYS_CACHELINE_SIZE		32
 #define CONFIG_CMD_USB
 #define CONFIG_USB_EHCI
 #define CONFIG_USB_EHCI_EXYNOS
-#define CONFIG_SYS_USB_EHCI_MAX_ROOT_PORTS      10
+#define CONFIG_SYS_USB_EHCI_MAX_ROOT_PORTS	10
 
 #define CONFIG_USB_STORAGE
 #define CONFIG_PARTITIONS
@@ -198,7 +198,7 @@
 #define CONFIG_USB_GADGET
 #define CONFIG_USB_GADGET_S3C_UDC_OTG
 #define CONFIG_USB_GADGET_DUALSPEED
-#define CONFIG_USB_GADGET_VBUS_DRAW 2
+#define CONFIG_USB_GADGET_VBUS_DRAW	2
 #define CONFIG_USB_CABLE_CHECK
 
 /* USB gadget mass storage */
@@ -207,9 +207,9 @@
 #define CONFIG_USB_GADGET_MASS_STORAGE
 
 /* USB Samsung's IDs */
-#define CONFIG_G_DNL_VENDOR_NUM 0x04E8
-#define CONFIG_G_DNL_PRODUCT_NUM 0x6601
-#define CONFIG_G_DNL_MANUFACTURER "Samsung"
+#define CONFIG_G_DNL_VENDOR_NUM		0x04E8
+#define CONFIG_G_DNL_PRODUCT_NUM	0x6601
+#define CONFIG_G_DNL_MANUFACTURER	"Samsung"
 
 /* NETCONSOLE */
 #define CONFIG_NETCONSOLE
@@ -233,7 +233,7 @@
 #define CONFIG_CONSOLE_MUX
 #define CONFIG_SYS_CONSOLE_IS_IN_ENV
 
-#define CONFIG_PREBOOT	"setenv stdin serial,nc"
+#define CONFIG_PREBOOT			"setenv stdin serial,nc"
 
 #define CONFIG_CMD_BOOTM
 
@@ -305,41 +305,45 @@
 #define CONFIG_BOOTDELAY	5
 /* Default boot commands for Android booting. */
 #if defined(CONFIG_HKDK4412) && defined(CONFIG_EXYNOS_PRIME)
-    #define CONFIG_BOOTCOMMAND  \
-        " mmc rescan 0:1; mmc rescan 0:2; "     \
-        " if run loadbootscript_1; "            \
-        "    then run bootscript; "             \
-        " else "                                \
-        "    if run loadbootscript_2; "         \
-        "        then run bootscript; "         \
-        "    else "                             \
-	"        run default_bootcmd; "         \
-        "    fi ;"                              \
-        " fi ; "                                
-        
-    #define CONFIG_BOOTARGS	"fb_x_res=1280 fb_y_res=720 "       \
-                            "hdmi_phy_res=720 "
+#define CONFIG_BOOTCOMMAND	\
+	" mmc rescan 0:1; mmc rescan 0:2; "	\
+	" if run loadbootscript_1; "		\
+	"    then run bootscript; "		\
+	" else "				\
+	"    if run loadbootscript_2; "		\
+	"        then run bootscript; "		\
+	"    else "				\
+	"        run default_bootcmd; "		\
+	"    fi ;"				\
+	" fi ; "
+
+#define CONFIG_BOOTARGS		\
+	"fb_x_res=1280 fb_y_res=720 "		\
+	"hdmi_phy_res=720 "
 #else
-#define CONFIG_BOOTCOMMAND	"movi read kernel 0 40008000;movi read rootfs 0 41000000 100000;bootm 40008000 41000000"
-    #define CONFIG_BOOTARGS	""
+#define CONFIG_BOOTCOMMAND	\
+	"movi read kernel 0 40008000;"		\
+	"movi read rootfs 0 41000000 100000;"	\
+	"bootm 40008000 41000000"
+#define CONFIG_BOOTARGS		""
 #endif
 
 #define CONFIG_BOOTCOMMAND2	\
-		"mmc erase user 0 1072 1;"	\
-		"movi r f 1 40000000;emmc open 0;movi w z f 0 40000000;emmc close 0;"	\
-		"movi r u 1 40000000;emmc open 0;movi w z u 0 40000000;emmc close 0;"	\
-		"movi r k 1 40000000;movi w k 0 40000000;"				\
-		"movi r r 1 40000000 100000;movi w r 0 40000000 100000;"		\
-		"fdisk -c 0;"								\
-		"movi init 0;"								\
-		"fatformat mmc 0:1;"							\
-		"mmc read 1 48000000 20000 a0000;"					\
-		"fastboot flash system 48000000;"					\
-		"mmc read 1 48000000 c0000 a0000;"					\
-		"fastboot flash userdata 48000000;"					\
-		"mmc read 1 48000000 160000 a0000;"					\
-		"fastboot flash cache 48000000;"					\
-		"reset"
+	"mmc erase user 0 1072 1;"	\
+	"movi r f 1 40000000;emmc open 0;movi w z f 0 40000000;emmc close 0;"	\
+	"movi r u 1 40000000;emmc open 0;movi w z u 0 40000000;emmc close 0;"	\
+	"movi r k 1 40000000;movi w k 0 40000000;"				\
+	"movi r r 1 40000000 100000;movi w r 0 40000000 100000;"		\
+	"fdisk -c 0;"								\
+	"movi init 0;"								\
+	"fatformat mmc 0:1;"							\
+	"mmc read 1 48000000 20000 a0000;"					\
+	"fastboot flash system 48000000;"					\
+	"mmc read 1 48000000 c0000 a0000;"					\
+	"fastboot flash userdata 48000000;"					\
+	"mmc read 1 48000000 160000 a0000;"					\
+	"fastboot flash cache 48000000;"					\
+	"reset"
 
 /*
  * Miscellaneous configurable options
@@ -349,13 +353,13 @@
 #define CONFIG_SYS_PROMPT_HUSH_PS2	"> "
 
 #if defined(CONFIG_HKDK4412)
-	#define CONFIG_SYS_PROMPT		"Exynos4412 # "
+#define CONFIG_SYS_PROMPT		"Exynos4412 # "
 #else
 #define CONFIG_SYS_PROMPT		"SMDK4412 # "
 #endif
-#define CONFIG_SYS_CBSIZE	256	/* Console I/O Buffer Size */
-#define CONFIG_SYS_PBSIZE	384	/* Print Buffer Size */
-#define CONFIG_SYS_MAXARGS	16	/* max number of command args */
+#define CONFIG_SYS_CBSIZE		256	/* Console I/O Buffer Size */
+#define CONFIG_SYS_PBSIZE		384	/* Print Buffer Size */
+#define CONFIG_SYS_MAXARGS		16	/* max number of command args */
 /* Boot Argument Buffer Size */
 #define CONFIG_SYS_BARGSIZE		CONFIG_SYS_CBSIZE
 /* memtest works on */
@@ -373,7 +377,6 @@
  * The stack sizes are set up in start.S using the settings below
  */
 #define CONFIG_STACKSIZE	(256 << 10)	/* 256 KiB */
-
 
 #if defined(CONFIG_EXYNOS_PRIME)
 #define CONFIG_NR_DRAM_BANKS	8
@@ -408,7 +411,7 @@
 #define CONFIG_SYS_MONITOR_LEN		(256 << 10)	/* 256 KiB */
 
 #if defined(CONFIG_HKDK4412)
-	#define CONFIG_IDENT_STRING		" for Exynox4412"
+#define CONFIG_IDENT_STRING		" for Exynox4412"
 #else
 #define CONFIG_IDENT_STRING		" for SMDK4412"
 #endif
@@ -418,28 +421,28 @@
 #ifdef CONFIG_ENABLE_MMU
 #define CONFIG_SYS_MAPPED_RAM_BASE	0xc0000000
 //#define CONFIG_SYS_MAPPED_RAM_BASE	CONFIG_SYS_SDRAM_BASE
-#define virt_to_phys(x)	virt_to_phy_s5pv310(x)
+#define virt_to_phys(x)			virt_to_phy_s5pv310(x)
 #else
 #define CONFIG_SYS_MAPPED_RAM_BASE	CONFIG_SYS_SDRAM_BASE
-#define virt_to_phys(x)	(x)
+#define virt_to_phys(x)			(x)
 #endif
 
-#define CONFIG_SYS_LOAD_ADDR		CONFIG_SYS_MAPPED_RAM_BASE + 0x3e00000
-#define CONFIG_BOOTSCAN_SYS_LOAD_ADDR	(0x40008000)
+#define CONFIG_SYS_LOAD_ADDR			CONFIG_SYS_MAPPED_RAM_BASE + 0x3e00000
+#define CONFIG_BOOTSCAN_SYS_LOAD_ADDR		(0x40008000)
 #define CONFIG_BOOTSCAN_INITRD_LOAD_ADDR	(0x42000000)
-#define CONFIG_PHY_UBOOT_BASE		CONFIG_SYS_SDRAM_BASE + 0x3e00000
+#define CONFIG_PHY_UBOOT_BASE			CONFIG_SYS_SDRAM_BASE + 0x3e00000
 
 /*
  *  Fast Boot
 */
 /* Fastboot variables */
-#define CFG_FASTBOOT_TRANSFER_BUFFER            (0x48000000)
-//#define CFG_FASTBOOT_TRANSFER_BUFFER_SIZE       (0x10000000)   /* 256MB */
-#define CFG_FASTBOOT_TRANSFER_BUFFER_SIZE       (0x20000000)   /* 512MB */
-#define CFG_FASTBOOT_ADDR_KERNEL                (0x40008000)
-#define CFG_FASTBOOT_ADDR_RAMDISK               (0x40800000)
-#define CFG_FASTBOOT_PAGESIZE                   (2048)  // Page size of booting device
-#define CFG_FASTBOOT_SDMMC_BLOCKSIZE            (512)   // Block size of sdmmc
+#define CFG_FASTBOOT_TRANSFER_BUFFER		(0x48000000)
+//#define CFG_FASTBOOT_TRANSFER_BUFFER_SIZE	(0x10000000)   /* 256MB */
+#define CFG_FASTBOOT_TRANSFER_BUFFER_SIZE	(0x20000000)   /* 512MB */
+#define CFG_FASTBOOT_ADDR_KERNEL		(0x40008000)
+#define CFG_FASTBOOT_ADDR_RAMDISK		(0x40800000)
+#define CFG_FASTBOOT_PAGESIZE			(2048)  // Page size of booting device
+#define CFG_FASTBOOT_SDMMC_BLOCKSIZE		(512)   // Block size of sdmmc
 #define CFG_PARTITION_START			(0x4000000)
 
 /* Just one BSP type should be defined. */
@@ -461,10 +464,10 @@
  * machine type
  */
 
-//#define MACH_TYPE_C220		3765	/* SMDKC210 machine ID */
+//#define MACH_TYPE_C220	3765	/* SMDKC210 machine ID */
 #define MACH_TYPE_C220		4289	/* ODROIDX machine ID */
 
-#define CONFIG_ENV_OFFSET		0x0007C000
+#define CONFIG_ENV_OFFSET	0x0007C000
 
 /*-----------------------------------------------------------------------
  * Boot configuration
@@ -488,29 +491,29 @@
 #define USB			0x40
 
 /* nand copy size from nand to DRAM.*/
-#define	COPY_BL2_SIZE		0x80000
-#define CONFIG_SYS_MAX_NAND_DEVICE     1
-#define CFG_NAND_SKIP_BAD_DOT_I	1  /* ".i" read skips bad blocks   */
-#define	CFG_NAND_WP		1
-#define CFG_NAND_YAFFS_WRITE	1  /* support yaffs write */
+#define COPY_BL2_SIZE			0x80000
+#define CONFIG_SYS_MAX_NAND_DEVICE	1
+#define CFG_NAND_SKIP_BAD_DOT_I		1  /* ".i" read skips bad blocks   */
+#define CFG_NAND_WP			1
+#define CFG_NAND_YAFFS_WRITE		1  /* support yaffs write */
 #define CFG_NAND_HWECC
 #define CONFIG_NAND_BL1_16BIT_ECC
-#undef	CFG_NAND_FLASH_BBT
+#undef  CFG_NAND_FLASH_BBT
 
-#define CONFIG_SYS_NAND_BASE           (0x0CE00000)
-#define NAND_MAX_CHIPS          1
+#define CONFIG_SYS_NAND_BASE	(0x0CE00000)
+#define NAND_MAX_CHIPS		1
 
 #define NAND_DISABLE_CE()	(NFCONT_REG |= (1 << 1))
 #define NAND_ENABLE_CE()	(NFCONT_REG &= ~(1 << 1))
 #define NF_TRANSRnB()		do { while(!(NFSTAT_REG & (1 << 0))); } while(0)
 
 #define CFG_NAND_SKIP_BAD_DOT_I	1  /* ".i" read skips bad blocks   */
-#define	CFG_NAND_WP		1
+#define CFG_NAND_WP		1
 #define CFG_NAND_YAFFS_WRITE	1  /* support yaffs write */
 
 #define CFG_NAND_HWECC
 #define CONFIG_NAND_BL1_16BIT_ECC
-#undef	CFG_NAND_FLASH_BBT
+#undef  CFG_NAND_FLASH_BBT
 
 #define CONFIG_ZIMAGE_BOOT
 
@@ -522,7 +525,7 @@
 #define CONFIG_PARTITION_UUIDS
 
 //#define CONFIG_SYS_INIT_SP_ADDR	(CONFIG_SYS_LOAD_ADDR - 0x1000000)
-#define CONFIG_SYS_INIT_SP_ADDR	(0x43e00000 - 0x1000000)
+#define CONFIG_SYS_INIT_SP_ADDR		(0x43e00000 - 0x1000000)
 
 /*
  * Ethernet Contoller driver
@@ -539,18 +542,18 @@
 #define CONFIG_USB_ETHER_SMSC95XX
 
 /* GPIO */
-#define GPIO_BASE	0x11000000
+#define GPIO_BASE			0x11000000
 
 #define CONFIG_SAMSUNG_ONENAND		1
 
 #if defined(CONFIG_CMD_ONENAND)
-  #define CONFIG_C210_ONENAND
+#define CONFIG_C210_ONENAND
 #endif
 
-#define CFG_ONENAND_BASE 	(0x0C000000)
-#define CFG_ONENANDXL_BASE 	(0x0C600000)
+#define CFG_ONENAND_BASE		(0x0C000000)
+#define CFG_ONENANDXL_BASE		(0x0C600000)
 #define CONFIG_SYS_ONENAND_BASE	CFG_ONENAND_BASE
-#define CONFIG_SYS_MAX_ONENAND_DEVICE     1
+#define CONFIG_SYS_MAX_ONENAND_DEVICE	1
 
 #define CONFIG_BOOT_ONENAND_IROM
 #define CONFIG_NAND
@@ -561,4 +564,4 @@
 
 #define MEMORY_BASE_ADDRESS	0x40000000
 
-#endif	/* __CONFIG_H */
+#endif /* __CONFIG_H */
